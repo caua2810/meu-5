@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio Completo - Açaí Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@300;400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <header class="header" id="header">
+        <div class="header-container">
+            <a href="../index.html" class="logo">
+                <i class="ph-fill ph-cactus"></i>
+                <span>Açaí<span class="logo-accent">Premium</span></span>
+            </a>
+            <nav class="nav-desktop">
+                <a href="../index.html#produtos" class="nav-link">Cardápio</a>
+                <a href="../index.html#montar" class="nav-link">Monte o Seu</a>
+                <a href="../index.html#sobre" class="nav-link">Sobre</a>
+                <a href="../index.html#contato" class="nav-link">Contato</a>
+            </nav>
+            <div class="header-actions">
+                <button class="cart-btn" id="cartBtn">
+                    <i class="ph-fill ph-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+                <a href="../index.html" class="back-btn">
+                    <i class="ph-bold ph-arrow-left"></i>
+                    Voltar
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="cardapio-page">
+        <div class="page-header">
+            <h1>Cardápio Completo</h1>
+            <p>Todos os nossos produtos</p>
+        </div>
+
+        <section class="products" id="produtos">
+            <div class="section-container">
+                <!-- Filtros de Categoria -->
+                <div class="category-filters">
+                    <button class="filter-btn active" data-category="all">
+                        <i class="ph-fill ph-grid-four"></i>
+                        Todos
+                    </button>
+                    <button class="filter-btn" data-category="copos">
+                        <i class="ph-fill ph-cup-and-saucer"></i>
+                        Copos
+                    </button>
+                    <button class="filter-btn" data-category="combos">
+                        <i class="ph-fill ph-package"></i>
+                        Combos
+                    </button>
+                    <button class="filter-btn" data-category="bowls">
+                        <i class="ph-fill ph-bowl-food"></i>
+                        Bowls
+                    </button>
+                    <button class="filter-btn" data-category="bebidas">
+                        <i class="ph-fill ph-drink"></i>
+                        Bebidas
+                    </button>
+                    <button class="filter-btn" data-category="zero">
+                        <i class="ph-fill ph-leaf"></i>
+                        Zero Açúcar
+                    </button>
+                </div>
+                
+                <!-- Grid de Produtos -->
+                <div class="products-grid" id="productsGrid">
+                    <!-- Copos 300ml -->
+                    <div class="product-card" data-category="copos">
+                        <span class="product-badge bestseller">Mais Pedido</span>
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&q=80" alt="Açaí 300ml">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Açaí Tradicional 300ml</h3>
+                            <p class="product-description">O clássico açaí na versão perfecta</p>
+                            <div class="product-footer">
+                                <span class="product-price">R$ 12,00</span>
+                                <button class="product-btn">
+                                    <i class="ph-fill ph-plus"></i>
+                                    Pedir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Copos 500ml -->
+                    <div class="product-card" data-category="copos">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1626078436805-60221f29078a?w=400&q=80" alt="Açaí 500ml">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Açaí Tradicional 500ml</h3>
+                            <p class="product-description">Perfeito para matar a fome</p>
+                            <div class="product-footer">
+                                <span class="product-price">R$ 18,00</span>
+                                <button class="product-btn">
+                                    <i class="ph-fill ph-plus"></i>
+                                    Pedir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Copos 700ml -->
+                    <div class="product-card" data-category="copos">
+                        <span class="product-badge novo">Novo</span>
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=400&q=80" alt="Açaí 700ml">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Açaí Tradicional 700ml</h3>
+                            <p class="product-description">O gigante do açaí</p>
+                            <div class="product-footer">
+                                <span class="product-price">R$ 25,00</span>
+                                <button class="product-btn">
+                                    <i class="ph-fill ph-plus"></i>
+                                    Pedir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Açaí Zero -->
+                    <div class="product-card" data-category="zero">
+                        <span class="product-badge healthy">Zero Açúcar</span>
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1502741224143-90386d7f8c82?w=400&q=80" alt="Açaí Zero">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Açaí Zero 500ml</h3>
+                            <p class="product-description">Sem açúcar, mesmo sabor</p>
+                            <div class="product-footer">
+                                <span class="product-price">R$ 20,00</span>
+                                <button class="product-btn">
+                                    <i class="ph-fill ph-plus"></i>
+                                    Pedir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Açaí com Guaraná -->
+                    <div class="product-card" data-category="copos">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&q=80" alt="Açaí Guaraná">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Açaí Guaraná 500ml</h3>
+                            <p class="product-description">Mais energia e disposição</p>
+                            <div class="product-footer">
+                                <span class="product-price">R$ 18,00</span>
+                                <button class="product-btn">
+                                    <i class="ph-fill ph-plus"></i>
+                                    Pedir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Combo Acompanhamento -->
+                    <div class="product-card" data-category="combos">
+                        <span class="product-badge combo">Combo</span>
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=400&q=80" alt="Combo">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Combo Açaí + Acomp.</h3>
+                            <p class="product-description">Açaí 500ml + waffle</p>
+                            <div class="product-footer">
+                                <span class="product-price">R$ 22,00</span>
+                                <button class="product-btn">
+                                    <i class="ph-fill ph-plus"></i>
+                                    Pedir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Combo Família -->
+                    <div class="product-card" data-category="combos">
+                        <span class="product-badge familia">Família</span>
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&q=80" alt="Combo Família">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Combo Família 1L</h3>
+                            <p class="product-description">Perfeito para compartilhar</p>
+                            <div class="product-footer">
+                                <span class="product-price">R$ 45,00</span>
+                                <button class="product-btn">
+                                    <i class="ph-fill ph-plus"></i>
+                                    Pedir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bowl -->
+                    <div class="product-card" data-category="bowls">
+                        <span class="product-badge gourmet">Gourmet</span>
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400&q=80" alt="Bowl">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Açaí na Tigela (Bowl)</h3>
+                            <p class="product-description">Experience completa</p>
+                            <div class="product-footer">
+                                <span class="product-price">R$ 28,00</span>
+                                <button class="product-btn">
+                                    <i class="ph-fill ph-plus"></i>
+                                    Pedir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Smoothie -->
+                    <div class="product-card" data-category="bebidas">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1626078436805-60221f29078a?w=400&q=80" alt="Smoothie">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Smoothie de Açaí</h3>
+                            <p class="product-description">Bebida gelada</p>
+                            <div class="product-footer">
+                                <span class="product-price">R$ 15,00</span>
+                                <button class="product-btn">
+                                    <i class="ph-fill ph-plus"></i>
+                                    Pedir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Açaí Premium -->
+                    <div class="product-card" data-category="bowls">
+                        <span class="product-badge premium">Premium</span>
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=400&q=80" alt="Açaí Premium">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Açaí Premium Bowl</h3>
+                            <p class="product-description">O melhor açaí da casa</p>
+                            <div class="product-footer">
+                                <span class="product-price">R$ 35,00</span>
+                                <button class="product-btn">
+                                    <i class="ph-fill ph-plus"></i>
+                                    Pedir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kids -->
+                    <div class="product-card" data-category="copos">
+                        <span class="product-badge kids">Kids</span>
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1502741224143-90386d7f8c82?w=400&q=80" alt="Açaí Kids">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Açaí Kids 200ml</h3>
+                            <p class="product-description">Perfeito para crianças</p>
+                            <div class="product-footer">
+                                <span class="product-price">R$ 10,00</span>
+                                <button class="product-btn">
+                                    <i class="ph-fill ph-plus"></i>
+                                    Pedir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shake -->
+                    <div class="product-card" data-category="bebidas">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&q=80" alt="Shake">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-name">Açaí Shake</h3>
+                            <p class="product-description">Smoothie cremoso</p>
+                            <div class="product-footer">
+                                <span class="product-price">R$ 16,00</span>
+                                <button class="product-btn">
+                                    <i class="ph-fill ph-plus"></i>
+                                    Pedir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>&copy; 2024 Açaí Premium. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/cart.js"></script>
+</body>
+</html>

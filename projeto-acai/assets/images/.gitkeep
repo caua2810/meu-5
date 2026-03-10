@@ -1,0 +1,25 @@
+# Assets - Images
+
+This folder contains product images for the Açaí Premium website.
+
+## Recommended Image Sizes
+
+- Product Cards: 400x400px (w=400)
+- Gallery: 600x600px (w=600)
+- Hero: 1920x1080px (w=1920)
+
+## Image Sources
+
+The website uses images from Unsplash (via CDN). To add custom images:
+1. Add images to this folder
+2. Update the `src` attributes in the HTML files
+3. Use WebP format for better performance
+
+## Current Images Used
+
+- https://images.unsplash.com/photo-1590301157890-4810ed352733
+- https://images.unsplash.com/photo-1626078436805-60221f29078a
+- https://images.unsplash.com/photo-1579954115545-a95591f28bfc
+- https://images.unsplash.com/photo-1553530666-ba11a7da3888
+- https://images.unsplash.com/photo-1502741224143-90386d7f8c82
+- https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec
