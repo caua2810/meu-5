@@ -1,231 +1,131 @@
 /* ========================================
-   VALIDATION.JS - Validação de Formulários
+   AÇAÍ PREMIUM - validation.js
+   Validação de Formulários
    ======================================== */
 
-// ========================================
-// MÁSCARAS
-// ========================================
-
-document.addEventListener('DOMContentLoaded', function() {
-    initMasks();
-    initRealTimeValidation();
+document.addEventListener('DOMContentLoaded', () => {
+    initValidation();
 });
 
-/* ========================================
-   MÁSCARAS DE INPUT
-   ======================================== */
-
-function initMasks() {
-    // CPF
-    const cpfInput = document.getElementById('cpf');
-    if (cpfInput) {
-        cpfInput.addEventListener('input', (e) => {
-            e.target.value = maskCPF(e.target.value);
-        });
-        cpfInput.addEventListener('blur', (e) => {
-            validateField(e.target, 'cpf');
-        });
-    }
+function initValidation() {
+    // Add real-time validation to all forms
+    const forms = document.querySelectorAll('form');
     
-    // Telefone
-    const phoneInput = document.getElementById('phone');
-    if (phoneInput) {
-        phoneInput.addEventListener('input', (e) => {
-            e.target.value = maskPhone(e.target.value);
-        });
-    }
-    
-    // CEP
-    const cepInput = document.getElementById('cep');
-    if (cepInput) {
-        cepInput.addEventListener('input', (e) => {
-            e.target.value = maskCEP(e.target.value);
-        });
-        cepInput.addEventListener('blur', (e) => {
-            if (e.target.value.length === 9) {
-                searchCEP(e.target.value);
-            }
-        });
+    forms.forEach(form => {
+        const inputs = form.querySelectorAll('input');
         
-        // CEP search button
-        const cepSearch = document.getElementById('cepSearch');
-        if (cepSearch) {
-            cepSearch.addEventListener('click', () => {
-                const cep = cepInput.value;
-                if (cep.length === 9) {
-                    searchCEP(cep);
-                }
-            });
-        }
-    }
-}
-
-/**
- * Máscara de CPF
- */
-function maskCPF(value) {
-    return value
-        .replace(/\D/g, '')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d{1,2})/, '$1-$2')
-        .slice(0, 14);
-}
-
-/**
- * Máscara de Telefone
- */
-function maskPhone(value) {
-    const cleaned = value.replace(/\D/g, '');
-    
-    if (cleaned.length <= 10) {
-        // (00) 0000-0000
-        return cleaned
-            .replace(/(\d{2})(\d)/, '($1) $2')
-            .replace(/(\d{4})(\d)/, '$1-$2')
-            .slice(0, 14);
-    } else {
-        // (00) 00000-0000
-        return cleaned
-            .replace(/(\d{2})(\d)/, '($1) $2')
-            .replace(/(\d{5})(\d)/, '$1-$2')
-            .slice(0, 15);
-    }
-}
-
-/**
- * Máscara de CEP
- */
-function maskCEP(value) {
-    return value
-        .replace(/\D/g, '')
-        .replace(/(\d{5})(\d)/, '$1-$2')
-        .slice(0, 9);
-}
-
-/* ========================================
-   VALIDAÇÃO EM TEMPO REAL
-   ======================================== */
-
-function initRealTimeValidation() {
-    // Email
-    const emailInput = document.getElementById('email');
-    if (emailInput) {
-        emailInput.addEventListener('blur', (e) => {
-            validateField(e.target, 'email');
+        inputs.forEach(input => {
+            input.addEventListener('blur', () => validateField(input));
+            input.addEventListener('input', () => clearError(input));
         });
-        emailInput.addEventListener('input', (e) => {
-            clearError('email');
-        });
-    }
-    
-    // Password
-    const passwordInput = document.getElementById('password');
-    if (passwordInput) {
-        passwordInput.addEventListener('input', (e) => {
-            validatePassword(e.target.value);
-        });
-    }
-    
-    // Toggle password visibility
-    const passwordToggle = document.getElementById('passwordToggle');
-    if (passwordToggle) {
-        passwordToggle.addEventListener('click', () => {
-            const passwordInput = document.getElementById('password');
-            const type = passwordInput.type === 'password' ? 'text' : 'password';
-            passwordInput.type = type;
-            
-            const icon = passwordToggle.querySelector('i');
-            if (icon) {
-                icon.className = type === 'password' ? 'ph-bold ph-eye' : 'ph-bold ph-eye-slash';
-            }
-        });
-    }
+    });
 }
 
-/**
- * Valida um campo específico
- */
-function validateField(input, type) {
+function validateField(input) {
     const value = input.value.trim();
-    const wrapper = input.closest('.input-wrapper');
+    const fieldName = input.name || input.id;
     
-    switch (type) {
-        case 'email':
-            if (!value) {
-                showFieldError('email', 'Email é obrigatório');
-                return false;
-            }
-            if (!isValidEmail(value)) {
-                showFieldError('email', 'Email inválido');
-                return false;
-            }
-            showFieldSuccess('email');
-            return true;
-            
-        case 'cpf':
-            if (!value) {
-                showFieldError('cpf', 'CPF é obrigatório');
-                return false;
-            }
-            if (!validateCPF(value)) {
-                showFieldError('cpf', 'CPF inválido');
-                return false;
-            }
-            showFieldSuccess('cpf');
-            return true;
-            
-        case 'phone':
-            if (!value) {
-                showFieldError('phone', 'Telefone é obrigatório');
-                return false;
-            }
-            if (value.replace(/\D/g, '').length < 10) {
-                showFieldError('phone', 'Telefone inválido');
-                return false;
-            }
-            showFieldSuccess('phone');
-            return true;
-            
-        case 'cep':
-            if (!value) {
-                showFieldError('cep', 'CEP é obrigatório');
-                return false;
-            }
-            if (value.replace(/\D/g, '').length !== 8) {
-                showFieldError('cep', 'CEP inválido');
-                return false;
-            }
-            showFieldSuccess('cep');
-            return true;
-            
-        default:
-            return true;
-    }
-}
-
-/**
- * Valida email
- */
-function isValidEmail(email) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-}
-
-/**
- * Valida CPF
- */
-function validateCPF(cpf) {
-    // Remove non-digits
-    cpf = cpf.replace(/\D/g, '');
+    // Clear previous error
+    clearError(input);
     
-    // Check length
-    if (cpf.length !== 11) {
+    // Check required
+    if (input.hasAttribute('required') && !value) {
+        showError(input, 'Este campo é obrigatório');
         return false;
     }
     
-    // Check for known invalid CPFs
-    if (/^(\d)\1{10}$/.test(cpf)) {
+    // Check specific fields
+    switch (fieldName) {
+        case 'nome':
+            if (value && value.length < 3) {
+                showError(input, 'Nome deve ter pelo menos 3 caracteres');
+                return false;
+            }
+            break;
+            
+        case 'email':
+            if (value && !isValidEmail(value)) {
+                showError(input, 'Digite um e-mail válido');
+                return false;
+            }
+            break;
+            
+        case 'telefone':
+            if (value && value.replace(/\D/g, '').length < 10) {
+                showError(input, 'Digite um telefone válido');
+                return false;
+            }
+            break;
+            
+        case 'cpf':
+            if (value && !isValidCPF(value)) {
+                showError(input, 'Digite um CPF válido');
+                return false;
+            }
+            break;
+            
+        case 'cep':
+            if (value && value.replace(/\D/g, '').length !== 8) {
+                showError(input, 'Digite um CEP válido');
+                return false;
+            }
+            break;
+            
+        case 'senha':
+            if (value && value.length < 6) {
+                showError(input, 'Senha deve ter pelo menos 6 caracteres');
+                return false;
+            }
+            break;
+            
+        case 'confirmarSenha':
+            const senha = document.getElementById('senha');
+            if (value && senha && value !== senha.value) {
+                showError(input, 'As senhas não conferem');
+                return false;
+            }
+            break;
+    }
+    
+    // Mark as valid
+    input.classList.add('valid');
+    return true;
+}
+
+function showError(input, message) {
+    const group = input.closest('.form-group');
+    if (!group) return;
+    
+    input.classList.add('error');
+    input.classList.remove('valid');
+    
+    let errorElement = group.querySelector('.error-message');
+    if (!errorElement) {
+        errorElement = document.createElement('span');
+        errorElement.className = 'error-message';
+        group.appendChild(errorElement);
+    }
+    
+    errorElement.textContent = message;
+    group.classList.add('has-error');
+}
+
+function clearError(input) {
+    const group = input.closest('.form-group');
+    if (!group) return;
+    
+    input.classList.remove('error');
+    group.classList.remove('has-error');
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidCPF(cpf) {
+    cpf = cpf.replace(/\D/g, '');
+    
+    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
         return false;
     }
     
@@ -235,10 +135,10 @@ function validateCPF(cpf) {
         sum += parseInt(cpf.charAt(i)) * (10 - i);
     }
     
-    let digit1 = 11 - (sum % 11);
-    if (digit1 > 9) digit1 = 0;
+    let digit = 11 - (sum % 11);
+    if (digit > 9) digit = 0;
     
-    if (parseInt(cpf.charAt(9)) !== digit1) {
+    if (parseInt(cpf.charAt(9)) !== digit) {
         return false;
     }
     
@@ -248,289 +148,84 @@ function validateCPF(cpf) {
         sum += parseInt(cpf.charAt(i)) * (11 - i);
     }
     
-    let digit2 = 11 - (sum % 11);
-    if (digit2 > 9) digit2 = 0;
+    digit = 11 - (sum % 11);
+    if (digit > 9) digit = 0;
     
-    return parseInt(cpf.charAt(10)) === digit2;
+    return parseInt(cpf.charAt(10)) === digit;
 }
 
-/**
- * Valida senha
- */
-function validatePassword(password) {
-    const errorEl = document.getElementById('passwordError');
+// Format functions
+function formatPhone(value) {
+    value = value.replace(/\D/g, '');
     
-    if (password.length === 0) {
-        showFieldError('password', 'Senha é obrigatória');
-        return false;
+    if (value.length > 11) {
+        value = value.slice(0, 11);
     }
     
-    if (password.length < 6) {
-        showFieldError('password', 'Senha deve ter pelo menos 6 caracteres');
-        return false;
+    if (value.length >= 10) {
+        value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    } else if (value.length >= 6) {
+        value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+    } else if (value.length >= 2) {
+        value = value.replace(/(\d{2})(\d{0,4})/, '($1) $2');
     }
     
-    clearFieldError('password');
-    showFieldSuccess('password');
-    return true;
+    return value;
 }
 
-/* ========================================
-   BUSCA DE ENDEREÇO VIA CEP (ViaCEP API)
-   ======================================== */
-
-/**
- * Busca endereço pelo CEP
- */
-async function searchCEP(cep) {
-    const cleanCEP = cep.replace(/\D/g, '');
+function formatCPF(value) {
+    value = value.replace(/\D/g, '');
     
-    if (cleanCEP.length !== 8) {
-        showFieldError('cep', 'CEP inválido');
-        return;
+    if (value.length > 11) {
+        value = value.slice(0, 11);
     }
     
-    // Show loading
-    const cepInput = document.getElementById('cep');
-    const cepSearch = document.getElementById('cepSearch');
+    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
     
-    if (cepSearch) {
-        cepSearch.disabled = true;
-        cepSearch.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i>';
-    }
-    
-    try {
-        const response = await fetch(`https://viacep.com.br/ws/${cleanCEP}/json/`);
-        const data = await response.json();
-        
-        if (data.erro) {
-            showFieldError('cep', 'CEP não encontrado');
-            return;
-        }
-        
-        // Fill address fields
-        const addressInput = document.getElementById('address');
-        const neighborhoodInput = document.getElementById('neighborhood');
-        const cityInput = document.getElementById('city');
-        
-        if (addressInput && data.logradouro) {
-            addressInput.value = data.logradouro;
-            showFieldSuccess('address');
-        }
-        
-        if (neighborhoodInput && data.bairro) {
-            neighborhoodInput.value = data.bairro;
-            showFieldSuccess('neighborhood');
-        }
-        
-        if (cityInput && data.localidade) {
-            cityInput.value = `${data.localidade} - ${data.uf}`;
-            showFieldSuccess('city');
-        }
-        
-        clearError('cep');
-        
-        // Focus on number field
-        const numberInput = document.getElementById('number');
-        if (numberInput) {
-            numberInput.focus();
-        }
-        
-    } catch (error) {
-        console.error('Error fetching CEP:', error);
-        showFieldError('cep', 'Erro ao buscar CEP. Tente novamente.');
-    } finally {
-        // Reset button
-        if (cepSearch) {
-            cepSearch.disabled = false;
-            cepSearch.innerHTML = '<i class="ph-bold ph-magnifying-glass"></i>';
-        }
-    }
+    return value;
 }
 
-/* ========================================
-   HELPERS DE VALIDAÇÃO
-   ======================================== */
-
-/**
- * Mostra erro no campo
- */
-function showFieldError(fieldId, message) {
-    const input = document.getElementById(fieldId);
-    const wrapper = input?.closest('.input-wrapper');
-    const errorEl = document.getElementById(`${fieldId}Error`);
+function formatCEP(value) {
+    value = value.replace(/\D/g, '');
     
-    if (input) {
-        input.classList.add('error');
-        input.classList.remove('success');
+    if (value.length > 8) {
+        value = value.slice(0, 8);
     }
     
-    if (wrapper) {
-        wrapper.classList.add('input-error');
-        wrapper.classList.remove('input-success');
+    if (value.length >= 5) {
+        value = value.replace(/(\d{5})(\d)/, '$1-$2');
     }
     
-    if (errorEl) {
-        errorEl.textContent = message;
-    }
+    return value;
 }
 
-/**
- * Mostra sucesso no campo
- */
-function showFieldSuccess(fieldId) {
-    const input = document.getElementById(fieldId);
-    const wrapper = input?.closest('.input-wrapper');
-    const errorEl = document.getElementById(`${fieldId}Error`);
-    
-    if (input) {
-        input.classList.remove('error');
-        input.classList.add('success');
-    }
-    
-    if (wrapper) {
-        wrapper.classList.remove('input-error');
-        wrapper.classList.add('input-success');
-    }
-    
-    if (errorEl) {
-        errorEl.textContent = '';
-    }
-}
-
-/**
- * Limpa erro do campo
- */
-function clearFieldError(fieldId) {
-    const input = document.getElementById(fieldId);
-    const wrapper = input?.closest('.input-wrapper');
-    const errorEl = document.getElementById(`${fieldId}Error`);
-    
-    if (input) {
-        input.classList.remove('error', 'success');
-    }
-    
-    if (wrapper) {
-        wrapper.classList.remove('input-error', 'input-success');
-    }
-    
-    if (errorEl) {
-        errorEl.textContent = '';
-    }
-}
-
-/**
- * Limpa mensagem de erro genérica
- */
-function clearError(fieldId) {
-    const errorEl = document.getElementById(`${fieldId}Error`);
-    if (errorEl) {
-        errorEl.textContent = '';
-    }
-}
-
-/* ========================================
-   VALIDAÇÃO COMPLETA DO FORMULÁRIO
-   ======================================== */
-
-/**
- * Valida todo o formulário de cadastro
- */
-function validateForm() {
-    const fields = [
-        { id: 'fullName', name: 'Nome completo', required: true },
-        { id: 'email', name: 'Email', required: true, type: 'email' },
-        { id: 'phone', name: 'Telefone', required: true, type: 'phone' },
-        { id: 'cpf', name: 'CPF', required: true, type: 'cpf' },
-        { id: 'cep', name: 'CEP', required: true, type: 'cep' },
-        { id: 'address', name: 'Endereço', required: true },
-        { id: 'number', name: 'Número', required: true },
-        { id: 'neighborhood', name: 'Bairro', required: true },
-        { id: 'city', name: 'Cidade', required: true },
-        { id: 'password', name: 'Senha', required: true, type: 'password' }
-    ];
-    
+// Validate entire form
+function validateForm(form) {
+    const inputs = form.querySelectorAll('input[required]');
     let isValid = true;
     
-    fields.forEach(field => {
-        const input = document.getElementById(field.id);
-        if (!input) return;
-        
-        const value = input.value.trim();
-        
-        // Check required
-        if (field.required && !value) {
-            showFieldError(field.id, `${field.name} é obrigatório`);
+    inputs.forEach(input => {
+        if (!validateField(input)) {
             isValid = false;
-            return;
-        }
-        
-        // Check type
-        if (value) {
-            switch (field.type) {
-                case 'email':
-                    if (!isValidEmail(value)) {
-                        showFieldError(field.id, `${field.name} inválido`);
-                        isValid = false;
-                    } else {
-                        showFieldSuccess(field.id);
-                    }
-                    break;
-                    
-                case 'cpf':
-                    if (!validateCPF(value)) {
-                        showFieldError(field.id, `${field.name} inválido`);
-                        isValid = false;
-                    } else {
-                        showFieldSuccess(field.id);
-                    }
-                    break;
-                    
-                case 'phone':
-                    if (value.replace(/\D/g, '').length < 10) {
-                        showFieldError(field.id, `${field.name} inválido`);
-                        isValid = false;
-                    } else {
-                        showFieldSuccess(field.id);
-                    }
-                    break;
-                    
-                case 'cep':
-                    if (value.replace(/\D/g, '').length !== 8) {
-                        showFieldError(field.id, `${field.name} inválido`);
-                        isValid = false;
-                    } else {
-                        showFieldSuccess(field.id);
-                    }
-                    break;
-                    
-                case 'password':
-                    if (value.length < 6) {
-                        showFieldError(field.id, 'Senha deve ter pelo menos 6 caracteres');
-                        isValid = false;
-                    } else {
-                        showFieldSuccess(field.id);
-                    }
-                    break;
-                    
-                default:
-                    showFieldSuccess(field.id);
-            }
         }
     });
     
     return isValid;
 }
 
-/* ========================================
-   EXPORTAR FUNÇÕES
-   ======================================== */
-
-window.validateForm = validateForm;
-window.validateCPF = validateCPF;
-window.isValidEmail = isValidEmail;
-window.maskCPF = maskCPF;
-window.maskPhone = maskPhone;
-window.maskCEP = maskCEP;
-window.searchCEP = searchCEP;
+// Password strength checker
+function checkPasswordStrength(password) {
+    let strength = 0;
+    
+    if (password.length >= 6) strength++;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    
+    return strength;
+}
 

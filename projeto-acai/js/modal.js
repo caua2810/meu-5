@@ -1,425 +1,319 @@
 /* ========================================
-   MODAL.JS - Controle dos Modais
+   AÇAÍ PREMIUM - modal.js
+   Lógica do Modal de Cadastro
    ======================================== */
 
-// ========================================
-// VARIÁVEIS GLOBAIS
-// ========================================
-
-let currentProduct = {
-    name: null,
-    price: null,
-    id: null
-};
-
-// ========================================
-// INICIALIZAÇÃO
-// ========================================
-
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     initModal();
-    initOrderButtons();
-    initAuthToggle();
 });
 
-/* ========================================
-   MODAL PRINCIPAL
-   ======================================== */
+// DOM Elements
+let modal, modalClose, modalTabs, registerForm, currentTab = 'register';
 
 function initModal() {
-    const overlay = document.getElementById('modalOverlay');
-    const container = document.getElementById('modalContainer');
-    const closeBtn = document.getElementById('modalClose');
+    modal = document.getElementById('registerModal');
+    modalClose = document.getElementById('modalClose');
+    modalTabs = document.querySelectorAll('.modal-tab');
+    registerForm = document.getElementById('registerForm');
     
-    if (!overlay) return;
+    if (!modal) return;
     
-    // Close button
-    if (closeBtn) {
-        closeBtn.addEventListener('click', closeModal);
+    // Close modal events
+    if (modalClose) {
+        modalClose.addEventListener('click', closeModal);
     }
     
-    // Click outside to close
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
             closeModal();
         }
     });
+    
+    // Tab switching
+    modalTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            switchTab(tab.dataset.tab);
+        });
+    });
+    
+    // Form submission
+    if (registerForm) {
+        registerForm.addEventListener('submit', handleFormSubmit);
+    }
     
     // ESC key to close
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && overlay.classList.contains('active')) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
             closeModal();
         }
     });
-    
-    // Focus trap
-    if (container) {
-        container.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                trapFocus(e, container);
-            }
-        });
-    }
 }
 
-/**
- * Abre o modal de cadastro/login
- */
-function openModal(productName = null, productPrice = null, productId = null) {
-    const overlay = document.getElementById('modalOverlay');
-    const productNameEl = document.getElementById('modalProductName');
-    const productPriceEl = document.getElementById('modalProductPrice');
-    const successMessage = document.getElementById('successMessage');
-    const registerForm = document.getElementById('registerForm');
-    const loginForm = document.getElementById('loginForm');
-    
-    // Store product info
-    currentProduct = {
-        name: productName || 'Açaí Personalizado',
-        price: productPrice || '18,00',
-        id: productId || 'custom'
-    };
-    
-    // Update product info in modal
-    if (productNameEl) productNameEl.textContent = currentProduct.name;
-    if (productPriceEl) productPriceEl.textContent = `R$ ${currentProduct.price}`;
-    
-    // Reset forms
-    if (registerForm) registerForm.reset();
-    if (loginForm) loginForm.reset();
-    
-    // Hide success message, show forms
-    if (successMessage) successMessage.classList.add('hidden');
-    if (registerForm) registerForm.classList.remove('hidden');
-    if (loginForm) loginForm.classList.add('hidden');
-    
-    // Show modal
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    // Focus first input
-    setTimeout(() => {
-        const firstInput = overlay.querySelector('input:not([type="hidden"])');
-        if (firstInput) firstInput.focus();
-    }, 300);
-}
-
-/**
- * Fecha o modal
- */
 function closeModal() {
-    const overlay = document.getElementById('modalOverlay');
-    
-    overlay.classList.remove('active');
-    document.body.style.overflow = '';
-    
-    // Clear product info
-    currentProduct = { name: null, price: null, id: null };
-}
-
-/**
- * Focus trap for accessibility
- */
-function trapFocus(e, container) {
-    const focusableElements = container.querySelectorAll(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-    
-    if (e.shiftKey) {
-        if (document.activeElement === firstElement) {
-            e.preventDefault();
-            lastElement.focus();
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        
+        // Reset form
+        if (registerForm) {
+            registerForm.reset();
+            registerForm.classList.remove('success');
         }
-    } else {
-        if (document.activeElement === lastElement) {
-            e.preventDefault();
-            firstElement.focus();
+        
+        // Reset to register tab
+        switchTab('register');
+    }
+}
+
+function switchTab(tab) {
+    currentTab = tab;
+    
+    modalTabs.forEach(t => {
+        t.classList.remove('active');
+        if (t.dataset.tab === tab) {
+            t.classList.add('active');
+        }
+    });
+    
+    // Toggle password field
+    const passwordField = document.getElementById('passwordField');
+    if (passwordField) {
+        if (tab === 'login') {
+            passwordField.style.display = 'none';
+        } else {
+            passwordField.style.display = 'grid';
         }
     }
 }
 
-/* ========================================
-   BOTÕES DE PEDIDO
-   ======================================== */
-
-function initOrderButtons() {
-    // Header order button
-    const headerOrderBtn = document.getElementById('headerOrderBtn');
-    if (headerOrderBtn) {
-        headerOrderBtn.addEventListener('click', () => {
-            openModal('Açaí 500ml', '18,00', 'acai-500');
-        });
+function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(registerForm);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Validate form
+    if (!validateForm(data)) {
+        return;
     }
     
-    // Hero order button
-    const heroOrderBtn = document.getElementById('heroOrderBtn');
-    if (heroOrderBtn) {
-        heroOrderBtn.addEventListener('click', () => {
-            openModal('Açaí 500ml', '18,00', 'acai-500');
-        });
-    }
+    // Simulate API call
+    const submitBtn = registerForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="loading"></span> Processando...';
+    submitBtn.disabled = true;
     
-    // Final CTA button
-    const finalOrderBtn = document.getElementById('finalOrderBtn');
-    if (finalOrderBtn) {
-        finalOrderBtn.addEventListener('click', () => {
-            openModal('Açaí 500ml', '18,00', 'acai-500');
-        });
-    }
-    
-    // Product buttons (handled by main.js, but we ensure they work here too)
-    document.querySelectorAll('.product-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const name = btn.dataset.name || 'Açaí Personalizado';
-            const price = btn.dataset.price || '18,00';
-            const id = btn.dataset.product || 'custom';
-            openModal(name, price, id);
-        });
-    });
+    setTimeout(() => {
+        // Show success
+        showSuccessMessage();
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 2000);
 }
 
-/* ========================================
-   TOGGLE LOGIN/CADASTRO
-   ======================================== */
-
-function initAuthToggle() {
-    const toggleButtons = document.querySelectorAll('.toggle-btn');
-    const registerForm = document.getElementById('registerForm');
-    const loginForm = document.getElementById('loginForm');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalSubtitle = document.getElementById('modalSubtitle');
-    
-    if (!toggleButtons.length) return;
-    
-    toggleButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const form = btn.dataset.form;
-            
-            // Update toggle buttons
-            toggleButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            // Show/hide forms
-            if (form === 'register') {
-                registerForm?.classList.remove('hidden');
-                loginForm?.classList.add('hidden');
-                if (modalTitle) modalTitle.textContent = 'Criar Conta';
-                if (modalSubtitle) modalSubtitle.textContent = 'Preencha seus dados para continuar';
-            } else {
-                registerForm?.classList.add('hidden');
-                loginForm?.classList.remove('hidden');
-                if (modalTitle) modalTitle.textContent = 'Entrar';
-                if (modalSubtitle) modalSubtitle.textContent = 'Faça login para continuar';
-            }
-        });
-    });
-}
-
-/* ========================================
-   FORMULÁRIO DE CADASTRO
-   ======================================== */
-
-// Handle form submission
-document.addEventListener('DOMContentLoaded', function() {
-    const registerForm = document.getElementById('registerForm');
-    const loginForm = document.getElementById('loginForm');
-    const successMessage = document.getElementById('successMessage');
-    const closeSuccessBtn = document.getElementById('closeSuccessBtn');
-    
-    // Register form submit
-    if (registerForm) {
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Validate form
-            if (!validateRegisterForm()) {
-                return;
-            }
-            
-            // Show loading
-            const submitBtn = registerForm.querySelector('.submit-btn');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner"></span> Cadastrando...';
-            submitBtn.disabled = true;
-            
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            // Show success
-            registerForm.classList.add('hidden');
-            if (successMessage) successMessage.classList.remove('hidden');
-            
-            // Reset button
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-            
-            // Add to cart
-            if (typeof addToCart === 'function') {
-                addToCart(currentProduct);
-            }
-        });
-    }
-    
-    // Login form submit
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Show loading
-            const submitBtn = loginForm.querySelector('.submit-btn');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner"></span> Entrando...';
-            submitBtn.disabled = true;
-            
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            // Show success
-            loginForm.classList.add('hidden');
-            if (successMessage) successMessage.classList.remove('hidden');
-            
-            // Reset button
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-            
-            // Add to cart
-            if (typeof addToCart === 'function') {
-                addToCart(currentProduct);
-            }
-        });
-    }
-    
-    // Close success button
-    if (closeSuccessBtn) {
-        closeSuccessBtn.addEventListener('click', closeModal);
-    }
-});
-
-/**
- * Valida o formulário de cadastro
- */
-function validateRegisterForm() {
+function validateForm(data) {
     let isValid = true;
     
-    // Required fields
-    const requiredFields = [
-        { id: 'fullName', name: 'Nome' },
-        { id: 'email', name: 'Email' },
-        { id: 'phone', name: 'Telefone' },
-        { id: 'cpf', name: 'CPF' },
-        { id: 'cep', name: 'CEP' },
-        { id: 'address', name: 'Endereço' },
-        { id: 'number', name: 'Número' },
-        { id: 'neighborhood', name: 'Bairro' },
-        { id: 'city', name: 'Cidade' },
-        { id: 'password', name: 'Senha' }
-    ];
+    // Clear previous errors
+    document.querySelectorAll('.form-group').forEach(group => {
+        group.classList.remove('has-error');
+    });
+    
+    // Validate required fields
+    const requiredFields = ['nome', 'email', 'telefone', 'cpf', 'cep', 'endereco', 'numero', 'bairro'];
+    
+    if (currentTab === 'register') {
+        requiredFields.push('senha', 'confirmarSenha');
+    }
     
     requiredFields.forEach(field => {
-        const input = document.getElementById(field.id);
-        const wrapper = input?.closest('.input-wrapper');
-        
+        const input = document.getElementById(field);
         if (input && !input.value.trim()) {
-            showError(field.id, `${field.name} é obrigatório`);
-            wrapper?.classList.add('input-error');
-            wrapper?.classList.remove('input-success');
+            markFieldError(field);
             isValid = false;
-        } else if (input && input.value.trim()) {
-            wrapper?.classList.remove('input-error');
-            wrapper?.classList.add('input-success');
         }
     });
     
-    // Email validation
+    // Validate email format
     const email = document.getElementById('email');
-    if (email && email.value) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email.value)) {
-            showError('email', 'Email inválido');
-            isValid = false;
-        }
-    }
-    
-    // CPF validation
-    const cpf = document.getElementById('cpf');
-    if (cpf && cpf.value) {
-        if (!validateCPF(cpf.value)) {
-            showError('cpf', 'CPF inválido');
-            isValid = false;
-        }
-    }
-    
-    // Password validation
-    const password = document.getElementById('password');
-    if (password && password.value.length < 6) {
-        showError('password', 'Senha deve ter pelo menos 6 caracteres');
+    if (email && email.value && !isValidEmail(email.value)) {
+        markFieldError('email');
         isValid = false;
+    }
+    
+    // Validate CPF
+    const cpf = document.getElementById('cpf');
+    if (cpf && cpf.value && !isValidCPF(cpf.value)) {
+        markFieldError('cpf');
+        isValid = false;
+    }
+    
+    // Validate password match
+    if (currentTab === 'register') {
+        const senha = document.getElementById('senha');
+        const confirmarSenha = document.getElementById('confirmarSenha');
+        
+        if (senha && confirmarSenha && senha.value !== confirmarSenha.value) {
+            markFieldError('confirmarSenha');
+            isValid = false;
+        }
+        
+        // Validate password length
+        if (senha && senha.value && senha.value.length < 6) {
+            markFieldError('senha');
+            isValid = false;
+        }
     }
     
     return isValid;
 }
 
-/**
- * Valida CPF
- */
-function validateCPF(cpf) {
+function markFieldError(fieldId) {
+    const input = document.getElementById(fieldId);
+    if (input) {
+        const group = input.closest('.form-group');
+        if (group) {
+            group.classList.add('has-error');
+        }
+    }
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidCPF(cpf) {
     cpf = cpf.replace(/\D/g, '');
     
-    if (cpf.length !== 11) return false;
+    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
+        return false;
+    }
     
-    // Check for known invalid CPFs
-    if (/^(\d)\1{10}$/.test(cpf)) return false;
-    
-    // Validate digits
     let sum = 0;
     for (let i = 0; i < 9; i++) {
         sum += parseInt(cpf.charAt(i)) * (10 - i);
     }
     
-    let digit1 = 11 - (sum % 11);
-    if (digit1 > 9) digit1 = 0;
+    let digit = 11 - (sum % 11);
+    if (digit > 9) digit = 0;
     
-    if (parseInt(cpf.charAt(9)) !== digit1) return false;
+    if (parseInt(cpf.charAt(9)) !== digit) {
+        return false;
+    }
     
     sum = 0;
     for (let i = 0; i < 10; i++) {
         sum += parseInt(cpf.charAt(i)) * (11 - i);
     }
     
-    let digit2 = 11 - (sum % 11);
-    if (digit2 > 9) digit2 = 0;
+    digit = 11 - (sum % 11);
+    if (digit > 9) digit = 0;
     
-    return parseInt(cpf.charAt(10)) === digit2;
+    return parseInt(cpf.charAt(10)) === digit;
 }
 
-/**
- * Mostra mensagem de erro
- */
-function showError(fieldId, message) {
-    const errorEl = document.getElementById(`${fieldId}Error`);
-    if (errorEl) {
-        errorEl.textContent = message;
+function showSuccessMessage() {
+    registerForm.innerHTML = `
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <h3>Pedido Confirmado!</h3>
+        <p>Obrigado! Seu pedido foi realizado com sucesso. Em breve você receberá uma confirmação.</p>
+    `;
+    
+    setTimeout(() => {
+        closeModal();
+    }, 3000);
+}
+
+// CEP Lookup - ViaCEP API
+const cepInput = document.getElementById('cep');
+if (cepInput) {
+    cepInput.addEventListener('blur', async (e) => {
+        const cep = e.target.value.replace(/\D/g, '');
+        
+        if (cep.length !== 8) {
+            return;
+        }
+        
+        const cepGroup = e.target.closest('.form-group');
+        cepGroup.classList.add('loading');
+        
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const data = await response.json();
+            
+            if (!data.erro) {
+                document.getElementById('endereco').value = data.logradouro || '';
+                document.getElementById('bairro').value = data.bairro || '';
+                
+                // Trigger input events for validation
+                document.getElementById('endereco').dispatchEvent(new Event('input'));
+                document.getElementById('bairro').dispatchEvent(new Event('input'));
+            }
+        } catch (error) {
+            console.error('Erro ao buscar CEP:', error);
+        }
+        
+        cepGroup.classList.remove('loading');
+    });
+}
+
+// Format inputs on typing
+document.addEventListener('input', (e) => {
+    if (e.target.id === 'telefone') {
+        e.target.value = formatPhone(e.target.value);
     }
-}
-
-/**
- * Limpa mensagem de erro
- */
-function clearError(fieldId) {
-    const errorEl = document.getElementById(`${fieldId}Error`);
-    if (errorEl) {
-        errorEl.textContent = '';
+    
+    if (e.target.id === 'cpf') {
+        e.target.value = formatCPF(e.target.value);
     }
+    
+    if (e.target.id === 'cep') {
+        e.target.value = formatCEP(e.target.value);
+    }
+});
+
+function formatPhone(value) {
+    value = value.replace(/\D/g, '');
+    if (value.length > 10) {
+        value = value.slice(0, 11);
+    }
+    
+    if (value.length >= 10) {
+        value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    } else if (value.length >= 6) {
+        value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+    } else if (value.length >= 2) {
+        value = value.replace(/(\d{2})(\d{0,4})/, '($1) $2');
+    }
+    
+    return value;
 }
 
-/* ========================================
-   EXPORTAR FUNÇÕES
-   ======================================== */
+function formatCPF(value) {
+    value = value.replace(/\D/g, '');
+    if (value.length > 11) {
+        value = value.slice(0, 11);
+    }
+    
+    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    
+    return value;
+}
 
-window.openModal = openModal;
-window.closeModal = closeModal;
+function formatCEP(value) {
+    value = value.replace(/\D/g, '');
+    if (value.length > 8) {
+        value = value.slice(0, 8);
+    }
+    
+    if (value.length >= 5) {
+        value = value.replace(/(\d{5})(\d)/, '$1-$2');
+    }
+    
+    return value;
+}
 

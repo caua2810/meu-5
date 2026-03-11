@@ -1,428 +1,326 @@
 /* ========================================
-   MAIN.JS - Script Principal
+   AÇAÍ PREMIUM - main.js
+   Funcionalidades Principais
    ======================================== */
 
-// ========================================
-// INICIALIZAÇÃO
-// ========================================
+// Menu Products Data
+const menuProducts = [
+    {
+        id: 1,
+        name: 'Açaí 300ml',
+        description: 'Porção individual perfeita para matar a fome',
+        price: 12.00,
+        image: 'https://i.pinimg.com/736x/a5/cc/6b/a5cc6bc77c5d554e80620d77271a94c0.jpg',
+        category: 'copos',
+        badge: null
+    },
+    {
+        id: 2,
+        name: 'Açaí 500ml',
+        description: 'O tamanho mais pedido, com bastante espaço para coberturas',
+        price: 18.00,
+        image: 'https://i.pinimg.com/736x/51/52/a2/5152a2d0d8be8ecca3661eb346e62a04.jpg',
+        category: 'copos',
+        badge: null
+    },
+    {
+        id: 3,
+        name: 'Açaí 700ml',
+        description: 'Para quem quer muito açaí e coberturas',
+        price: 25.00,
+        image: 'https://i.pinimg.com/1200x/3a/0a/9a/3a0a9a5fd33e7885cc4a1d505ae41818.jpg',
+        category: 'copos',
+        badge: 'Mais Vendido'
+    },
+    {
+        id: 4,
+        name: 'Açaí Zero 500ml',
+        description: 'Açaí sem açúcar adicionado e com bananas ',
+        price: 20.00,
+        image: 'https://i.pinimg.com/1200x/75/7f/95/757f9567e0a94b9726a4c8edfee025b0.jpg',
+        category: 'zero',
+        badge: 'Zero Açúcar'
+    },
+    {
+        id: 5,
+        name: 'Combo Açaí',
+        description: 'Açaí 500ml + mais um que sai de graça  + bônus de cobertura',
+        price: 22.00,
+        image: 'https://i.pinimg.com/736x/cc/a3/8f/cca38f4b12db664c250bf25a3112b2c2.jpg',
+        category: 'combos',
+        badge: 'Combo'
+    },
+    {
+        id: 6,
+        name: 'Combo Família 1L',
+        description: 'Perfeito para compartilhar em família ou com amigos',
+        price: 45.00,
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE6nrW3JfhZp3U2rSE8nDf-8zSA2gKuBDjfQ&s',
+        category: 'combos',
+        badge: 'Família'
+    },
+    {
+        id: 7,
+        name: 'Açaí na Tigela',
+        description: 'A experiência completa com frutas e granola',
+        price: 28.00,
+        image: 'https://i.pinimg.com/1200x/b3/e0/a5/b3e0a5678eccd90997a85adb6bbcbbfc.jpg',
+        category: 'bowls',
+        badge: 'Premium'
+    },
+    {
+        id: 8,
+        name: 'Açaí com Frutas',
+        description: 'Açaí cremoso acompanhado de frutas frescas selecionadas e com granola crocante',
+        price: 26.00,
+        image: 'https://i.pinimg.com/736x/c6/4d/e0/c64de099c26da30db2ef3d52676650da.jpg',
+        category: 'bowls',
+        badge: null
+    },
+    {
+        id: 9,
+        name: 'Açaí com Granola',
+        description: 'Açaí com granola crocante e banana e mel ',
+        price: 24.00,
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_p2PWOMpNDMDo-363S-Kc64RPyZF_PjWgug&s',
+        category: 'bowls',
+        badge: null
+    },
+    {
+        id: 10,
+        name: 'Smoothie de Açaí',
+        description: 'Bebida gelada e refrescante com açaí',
+        price: 15.00,
+        image: 'https://images.unsplash.com/photo-1577805947697-89e18249d767?w=400&h=400&fit=crop',
+        category: 'bebidas',
+        badge: null
+    }
+];
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Inicializa GSAP
-    initGSAP();
-    
-    // Inicializa componentes
-    initHeader();
-    initParticles();
-    initSmoothScroll();
-    initGallery();
-    initTestimonials();
-    initCategoryFilters();
-    initProductCards();
-    initBackToTop();
+// DOM Elements
+const menuGrid = document.getElementById('menuGrid');
+const filterButtons = document.querySelectorAll('.filter-btn');
+const cartBtn = document.getElementById('cartBtn');
+const cartSidebar = document.getElementById('cartSidebar');
+const cartClose = document.getElementById('cartClose');
+const cartOverlay = document.createElement('div');
+cartOverlay.className = 'cart-overlay';
+
+// Add overlay to body
+document.body.appendChild(cartOverlay);
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    renderMenuProducts('all');
+    initScrollEffects();
+    initMobileMenu();
+    initCartEvents();
+    initGSAPAnimations();
 });
 
-/* ========================================
-   GSAP ANIMATIONS
-   ======================================== */
-
-function initGSAP() {
-    // Registra ScrollTrigger
-    gsap.registerPlugin(ScrollTrigger);
+// Render Menu Products
+function renderMenuProducts(filter) {
+    const filteredProducts = filter === 'all' 
+        ? menuProducts 
+        : menuProducts.filter(product => product.category === filter);
     
-    // Animações de entrada das seções
-    gsap.utils.toArray('.section-header').forEach(header => {
-        gsap.from(header, {
-            scrollTrigger: {
-                trigger: header,
-                start: 'top 80%',
-                toggleActions: 'play none none reverse'
-            },
-            opacity: 0,
-            y: 30,
-            duration: 0.8,
-            ease: 'power3.out'
-        });
-    });
-    
-    // Animações dos cards de produtos
-    gsap.utils.toArray('.products-grid').forEach(grid => {
-        gsap.from(grid.children, {
-            scrollTrigger: {
-                trigger: grid,
-                start: 'top 80%'
-            },
-            opacity: 0,
-            y: 50,
-            stagger: 0.1,
-            duration: 0.6,
-            ease: 'power3.out'
-        });
-    });
-    
-    // Animações da galeria
-    gsap.utils.toArray('.gallery-item').forEach((item, index) => {
-        gsap.from(item, {
-            scrollTrigger: {
-                trigger: item,
-                start: 'top 85%'
-            },
-            opacity: 0,
-            scale: 0.8,
-            duration: 0.5,
-            delay: index * 0.1,
-            ease: 'back.out(1.7)'
-        });
-    });
+    menuGrid.innerHTML = filteredProducts.map((product, index) => `
+        <div class="menu-item" style="animation-delay: ${index * 0.1}s">
+            <div class="menu-item-image">
+                <img src="${product.image}" alt="${product.name}">
+                ${product.badge ? `<span class="menu-item-badge ${product.category === 'zero' ? 'zero' : ''}">${product.badge}</span>` : ''}
+            </div>
+            <div class="menu-item-content">
+                <h3 class="menu-item-title">${product.name}</h3>
+                <p class="menu-item-description">${product.description}</p>
+                <div class="menu-item-footer">
+                    <span class="menu-item-price">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
+                    <button class="menu-item-btn" onclick="openRegisterModal('${product.name} - R$ ${product.price.toFixed(2).replace('.', ',')}')">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
 }
 
-/* ========================================
-   HEADER
-   ======================================== */
+// Filter Buttons
+filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderMenuProducts(btn.dataset.filter);
+    });
+});
 
-function initHeader() {
-    const header = document.getElementById('header');
-    const hamburger = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobileMenu');
+// Scroll Effects
+function initScrollEffects() {
+    const navbar = document.querySelector('.navbar');
     
-    // Scroll effect
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
-            header.classList.add('scrolled');
+            navbar.classList.add('scrolled');
         } else {
-            header.classList.remove('scrolled');
+            navbar.classList.remove('scrolled');
         }
     });
     
-    // Mobile menu toggle
-    if (hamburger && mobileMenu) {
-        hamburger.addEventListener('click', () => {
-            mobileMenu.classList.toggle('active');
-            hamburger.classList.toggle('active');
+    // Scroll Animation Observer
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate');
+            }
+        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.scroll-animate').forEach(el => {
+        observer.observe(el);
+    });
+}
+
+// Mobile Menu
+function initMobileMenu() {
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (mobileMenuBtn && navLinks) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuBtn.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            cartOverlay.classList.toggle('active');
         });
         
-        // Close menu when clicking a link
-        mobileMenu.querySelectorAll('.mobile-nav-link').forEach(link => {
+        cartOverlay.addEventListener('click', () => {
+            mobileMenuBtn.classList.remove('active');
+            navLinks.classList.remove('active');
+            cartOverlay.classList.remove('active');
+        });
+        
+        // Close menu on link click
+        navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
-                hamburger.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+                navLinks.classList.remove('active');
+                cartOverlay.classList.remove('active');
             });
         });
     }
-    
-    // Cart button
-    const cartBtn = document.getElementById('cartBtn');
-    const cartDropdown = document.getElementById('cartDropdown');
-    const cartClose = document.getElementById('cartClose');
-    
-    if (cartBtn && cartDropdown) {
-        cartBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            cartDropdown.classList.toggle('active');
+}
+
+// Cart Events
+function initCartEvents() {
+    if (cartBtn && cartSidebar) {
+        cartBtn.addEventListener('click', () => {
+            cartSidebar.classList.add('active');
+            cartOverlay.classList.add('active');
         });
         
         if (cartClose) {
-            cartClose.addEventListener('click', () => {
-                cartDropdown.classList.remove('active');
-            });
+            cartClose.addEventListener('click', closeCart);
         }
         
-        // Close when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!cartDropdown.contains(e.target) && e.target !== cartBtn) {
-                cartDropdown.classList.remove('active');
-            }
-        });
+        cartOverlay.addEventListener('click', closeCart);
     }
 }
 
-/* ========================================
-   PARTÍCULAS FLUTUANTES
-   ======================================== */
-
-function initParticles() {
-    const particlesContainer = document.getElementById('particles');
-    if (!particlesContainer) return;
-    
-    const particleCount = 30;
-    const colors = ['#4B0082', '#8B00FF', '#FFD700', '#6A0DAD'];
-    
-    for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.top = Math.random() * 100 + '%';
-        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-        particle.style.animationDelay = Math.random() * 5 + 's';
-        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-        particlesContainer.appendChild(particle);
-    }
+function closeCart() {
+    cartSidebar.classList.remove('active');
+    cartOverlay.classList.remove('active');
 }
 
-/* ========================================
-   SMOOTH SCROLL
-   ======================================== */
-
-function initSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (href === '#') return;
-            
-            e.preventDefault();
-            const target = document.querySelector(href);
-            
-            if (target) {
-                const headerHeight = document.getElementById('header')?.offsetHeight || 70;
-                const targetPosition = target.getBoundingClientRect().top + window.scrollY - headerHeight;
-                
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-}
-
-/* ========================================
-   GALERIA / LIGHTBOX
-   ======================================== */
-
-function initGallery() {
-    const galleryItems = document.querySelectorAll('.gallery-item');
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightboxImg');
-    const lightboxClose = document.getElementById('lightboxClose');
-    
-    if (!galleryItems.length || !lightbox) return;
-    
-    galleryItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const img = item.querySelector('img');
-            if (img && lightboxImg) {
-                lightboxImg.src = img.src.replace('w=400', 'w=1200').replace('w=600', 'w=1200');
-                lightbox.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        });
-    });
-    
-    if (lightboxClose) {
-        lightboxClose.addEventListener('click', closeLightbox);
-    }
-    
-    if (lightbox) {
-        lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox) {
-                closeLightbox();
-            }
-        });
-    }
-    
-    function closeLightbox() {
-        lightbox.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && lightbox?.classList.contains('active')) {
-            closeLightbox();
-        }
-    });
-}
-
-/* ========================================
-   DEPOIMENTOS / CARROSSEL
-   ======================================== */
-
-function initTestimonials() {
-    const track = document.getElementById('carouselTrack');
-    const dots = document.querySelectorAll('.carousel-dots .dot');
-    
-    if (!track || !dots.length) return;
-    
-    let currentIndex = 0;
-    let autoplayInterval;
-    const cardWidth = 380; // card width + gap
-    const totalCards = track.children.length;
-    const maxIndex = Math.max(0, totalCards - 1);
-    
-    function goToSlide(index) {
-        currentIndex = Math.max(0, Math.min(index, maxIndex));
-        gsap.to(track, {
-            x: -currentIndex * cardWidth,
-            duration: 0.5,
-            ease: 'power2.out'
+// GSAP Animations
+function initGSAPAnimations() {
+    if (typeof gsap !== 'undefined') {
+        // Hero animations
+        gsap.from('.hero-title', {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            ease: 'power3.out'
         });
         
-        dots.forEach((dot, i) => {
-            dot.classList.toggle('active', i === currentIndex);
+        gsap.from('.hero-subtitle', {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            delay: 0.3,
+            ease: 'power3.out'
+        });
+        
+        gsap.from('.hero-buttons', {
+            duration: 0.8,
+            y: 20,
+            opacity: 0,
+            delay: 0.6,
+            ease: 'power3.out'
+        });
+        
+        // Section animations
+        gsap.from('.section-header', {
+            scrollTrigger: {
+                trigger: '.section-header',
+                start: 'top 80%'
+            },
+            duration: 0.8,
+            y: 30,
+            opacity: 0,
+            ease: 'power3.out'
         });
     }
-    
-    function nextSlide() {
-        goToSlide((currentIndex + 1) % totalCards);
-    }
-    
-    function startAutoplay() {
-        autoplayInterval = setInterval(nextSlide, 5000);
-    }
-    
-    function stopAutoplay() {
-        clearInterval(autoplayInterval);
-    }
-    
-    // Dot navigation
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            stopAutoplay();
-            goToSlide(index);
-            startAutoplay();
-        });
-    });
-    
-    // Pause on hover
-    track.addEventListener('mouseenter', stopAutoplay);
-    track.addEventListener('mouseleave', startAutoplay);
-    
-    // Touch/swipe support
-    let touchStartX = 0;
-    let touchEndX = 0;
-    
-    track.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-        stopAutoplay();
-    }, { passive: true });
-    
-    track.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-        startAutoplay();
-    }, { passive: true });
-    
-    function handleSwipe() {
-        const diff = touchStartX - touchEndX;
-        if (Math.abs(diff) > 50) {
-            if (diff > 0) {
-                goToSlide(Math.min(currentIndex + 1, maxIndex));
-            } else {
-                goToSlide(Math.max(currentIndex - 1, 0));
-            }
-        }
-    }
-    
-    // Start autoplay
-    startAutoplay();
 }
 
-/* ========================================
-   FILTROS DE CATEGORIA
-   ======================================== */
-
-function initCategoryFilters() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const productsGrid = document.getElementById('productsGrid');
-    
-    if (!filterButtons.length || !productsGrid) return;
-    
-    const productCards = productsGrid.querySelectorAll('.product-card');
-    
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Update active button
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            const category = button.dataset.category;
-            
-            // Filter products
-            productCards.forEach(card => {
-                const cardCategory = card.dataset.category;
-                
-                if (category === 'all' || cardCategory === category) {
-                    gsap.to(card, {
-                        opacity: 1,
-                        scale: 1,
-                        duration: 0.3,
-                        display: 'block'
-                    });
-                } else {
-                    gsap.to(card, {
-                        opacity: 0,
-                        scale: 0.8,
-                        duration: 0.3,
-                        onComplete: () => {
-                            card.style.display = 'none';
-                        }
-                    });
-                }
-            });
-        });
-    });
-}
-
-/* ========================================
-   PRODUCT CARDS
-   ======================================== */
-
-function initProductCards() {
-    const productButtons = document.querySelectorAll('.product-btn');
-    
-    productButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            const productName = button.dataset.name || 'Açaí Personalizado';
-            const productPrice = button.dataset.price || '18.00';
-            const productId = button.dataset.product || 'custom';
-            
-            // Open modal with product info
-            if (typeof openModal === 'function') {
-                openModal(productName, productPrice, productId);
-            }
-        });
-    });
-}
-
-/* ========================================
-   BACK TO TOP
-   ======================================== */
-
-function initBackToTop() {
-    // Create back to top button
-    const btn = document.createElement('button');
-    btn.className = 'back-to-top';
-    btn.innerHTML = '<i class="ph-bold ph-arrow-up"></i>';
-    btn.setAttribute('aria-label', 'Voltar ao topo');
-    document.body.appendChild(btn);
-    
-    // Show/hide button
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 500) {
-            btn.classList.add('visible');
-        } else {
-            btn.classList.remove('visible');
-        }
-    });
-    
-    // Scroll to top
-    btn.addEventListener('click', () => {
+// Scroll to section
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        const headerOffset = 80;
+        const elementPosition = section.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        
         window.scrollTo({
-            top: 0,
+            top: offsetPosition,
             behavior: 'smooth'
         });
-    });
+    }
 }
 
-/* ========================================
-   EXPORTAR FUNÇÕES GLOBAIS
-   ======================================== */
-
-// Função para abrir modal de pedido (chamada por outros scripts)
-window.openOrderModal = function(productName = null, productPrice = null, productId = null) {
-    if (typeof openModal === 'function') {
-        openModal(productName, productPrice, productId);
+// Open Register Modal (called from HTML)
+function openRegisterModal(productInfo = '') {
+    const modal = document.getElementById('registerModal');
+    const modalProductName = document.getElementById('modalProductName');
+    const modalProductDetails = document.getElementById('modalProductDetails');
+    
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        if (productInfo) {
+            modalProductName.textContent = productInfo.split(' - ')[0];
+            modalProductDetails.innerHTML = `
+                <span>Preço: ${productInfo.split(' - ')[1] || ''}</span>
+            `;
+        } else {
+            modalProductName.textContent = 'Açaí Premium';
+        }
     }
-};
+}
+
+// Update Cart Count
+function updateCartCount(count) {
+    const cartCount = document.getElementById('cartCount');
+    if (cartCount) {
+        cartCount.textContent = count;
+    }
+}
+
+// Format Price
+function formatPrice(price) {
+    return `R$ ${price.toFixed(2).replace('.', ',')}`;
+}
 

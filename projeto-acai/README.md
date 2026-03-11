@@ -1,135 +1,82 @@
-# 🍇 Açaí Premium - Landing Page
+# 🍧 Açaí Premium - Landing Page
 
-Landing page premium 100% funcional para uma loja de açaí, desenvolvida com HTML5, CSS3 e JavaScript Vanilla.
-
-![Açaí Premium](https://images.unsplash.com/photo-1590301157890-4810ed352733?w=600&q=80)
-
-## ✨ Funcionalidades
-
-### 🎯 Sistema de Cadastro/Login
-- Modal interativo com validação em tempo real
-- Campos: Nome, Email, Telefone, CPF, Endereço, CEP
-- Más Telefone e CEP
-- Busca automática de endereço via APIcaras para CPF, ViaCEP
-- Toggle entre criar conta e login
-- Feedback visual com bordas coloridas
-
-### 🥣 Configurador de Açaí
-- Seletor de tamanho (300ml, 500ml, 700ml)
-- Escolha de sabor base (Tradicional, Guaraná, Zero Açúcar)
-- Grid de coberturas com preços
-- Preview visual do copo
-- Preço em tempo real
-- Limite de coberturas por tamanho
-- LocalStorage para persistência
-
-### 📋 Cardápio
-- 8 produtos variados
-- Filtros por categoria
-- Cards com glassmorphism
-- Badges de destaque
-
-### 🛒 Carrinho
-- Dropdown com itens
-- Quantidade ajustável
-- Cálculo automático de total
-- Integração com WhatsApp para pedidos
-
-### 📱 Design Responsivo
-- Mobile-first
-- Breakpoints: 320px, 768px, 1024px, 1440px
-- Menu hamburger mobile
-- Touch-friendly
-
-### 🎨 Design System
-- Tema roxo escuro premium
-- Cores: Roxo Açaí (#4B0082), Roxo Vibrante (#8B00FF), Dourado (#FFD700)
-- Tipografia: Poppins, Inter, Roboto Mono
-- Efeitos: Glassmorphism, glows, partículas
+Um site premium 100% funcional para loja de açaí, desenvolvido com HTML5, CSS3 e JavaScript Vanilla.
 
 ## 📁 Estrutura de Arquivos
 
 ```
 projeto-acai/
-├── index.html              # Página principal
+├── index.html              # Landing page principal
 ├── html/
 │   ├── cadastro.html       # Página de cadastro
-│   ├── cardapio.html      # Cardápio completo
-│   └── sobre.html         # Sobre nós
+│   ├── cardapio.html       # Cardápio completo
+│   └── sobre.html          # Página sobre a loja
 ├── css/
-│   ├── style.css          # Estilos principais
-│   ├── modal.css          # Estilos dos modais
-│   ├── configurator.css   # Configurador de açaí
-│   └── responsive.css    # Media queries
+│   ├── style.css           # Estilos principais
+│   ├── modal.css           # Modal de cadastro
+│   ├── configurator.css    # Configurador de açaí
+│   └── responsive.css      # Design responsivo
 ├── js/
-│   ├── main.js            # Script principal
-│   ├── modal.js           # Controle de modais
-│   ├── configurator.js   # Lógica do configurador
-│   ├── validation.js      # Validação de formulários
-│   └── cart.js           # Carrinho de compras
+│   ├── main.js             # Funcionalidades principais
+│   ├── modal.js            # Lógica do modal
+│   ├── configurator.js     # Configurador interativo
+│   ├── validation.js       # Validação de formulários
+│   └── cart.js             # Carrinho de compras
 ├── assets/
-│   ├── images/           # Imagens
-│   └── icons/            # Ícones
-└── README.md             # Este arquivo
+│   ├── images/             # Imagens do projeto
+│   ├── icons/              # Ícones
+│   └── fonts/              # Fontes
+└── README.md               # Este arquivo
 ```
 
-## 🚀 Como Executar
+## 🎨 Cores do Projeto
 
-1. Clone ou baixe este repositório
-2. Navegue até a pasta `projeto-acai`
-3. Abra o arquivo `index.html` no seu navegador
+- **Roxo Açaí**: #4B0082
+- **Roxo Vibrante**: #8B00FF
+- **Dourado**: #FFD700
 
-```bash
-# Ou use um servidor local
-npx serve projeto-acai
-# ou
-cd projeto-acai && python -m http.server 8000
-```
+## 🔧 Funcionalidades
 
-## 🔧 Tecnologias
+### 1. Modal de Cadastro
+- Formulário completo com validação em tempo real
+- Busca de endereço por CEP (API ViaCEP)
+- Toggle entre criar conta e login
+- Produto pré-selecionado
 
-- **HTML5** - Semântica e estrutura
-- **CSS3** - Estilização moderna com variáveis
-- **JavaScript Vanilla** - Sem frameworks
-- **GSAP** - Animações (via CDN)
-- **Phosphor Icons** - Ícones (via CDN)
-- **Font Awesome** - Ícones (via CDN)
-- **ViaCEP API** - Busca de endereço
+### 2. Configurador de Açaí
+- 3 tamanhos: 300ml, 500ml, 700ml
+- 3 sabores: Tradicional, Guaraná, Zero
+- Coberturas ilimitadas com limite por tamanho
+- Preview visual em tempo real
+- Preço dinâmico
 
-## 📱 Compatibilidade
+### 3. Cardápio
+- Produtos exclusivos de açaí
+- Filtros: Todos | Copos | Combos | Bowls | Bebidas | Zero
+- Preços atualizados
 
-- Chrome/Edge (últimas versões)
-- Firefox (últimas versões)
-- Safari (últimas versões)
-- Mobile: iOS Safari, Chrome Android
+## 📱 Design Responsivo
 
-## 🎨 Capturas de Tela
+O site é mobile-first e totalmente responsivo:
+- Mobile: < 768px
+- Tablet: 768px - 1024px
+- Desktop: > 1024px
 
-### Hero Section
-- Vídeo/imagem parallax de fundo
-- Título "AÇAÍ PREMIUM"
-- Botões de CTA com animações
+## 🚀 Como Usar
 
-### Cardápio
-- Grid responsivo de produtos
-- Filtros por categoria
-- Cards com hover effects
+1. Clone ou baixe o projeto
+2. Abra `index.html` no seu navegador
+3. Explore todas as funcionalidades
 
-### Configurador
-- Passo a passo interativo
-- Preview visual do copo
-- Preço em tempo real
+## 📋 Tecnologias
 
-### Modal de Cadastro
-- Formulário completo
-- Validação em tempo real
-- Busca de CEP automática
+- HTML5
+- CSS3
+- JavaScript Vanilla
+- GSAP (animações via CDN)
+- API ViaCEP (busca de endereço)
 
 ## 📄 Licença
 
-Este projeto é apenas para fins educacionais.
-
----
-
-Desenvolvido com ❤️ e muito açaí!
+Este projeto é para fins educacionais e comerciais.
 

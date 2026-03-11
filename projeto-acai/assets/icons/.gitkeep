@@ -1,24 +1,5 @@
 # Assets - Icons
 
-This folder contains custom icons and favicons for the Açaí Premium website.
+Esta pasta é destinada para ícones do projeto.
+Os ícones atuais são carregados via Font Awesome CDN.
 
-## Current Implementation
-
-The website uses icons from:
-- **Phosphor Icons** (via CDN): `https://unpkg.com/@phosphor-icons/web`
-- **Font Awesome** (via CDN): `https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css`
-
-## Favicon
-
-Currently using a generated favicon. To add a custom favicon:
-1. Add `favicon.png` to this folder
-2. Update the link in index.html:
-   ```html
-   <link rel="icon" type="image/png" href="assets/icons/favicon.png">
-   ```
-
-## Custom Icons
-
-To add custom SVG icons:
-1. Add SVG files to this folder
-2. Reference them in CSS or HTML as needed
