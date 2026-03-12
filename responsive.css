@@ -99,6 +99,11 @@
         padding: 12px 0;
     }
     
+    .nav-container {
+        justify-content: center;
+        gap: 15px;
+    }
+    
     .nav-links {
         position: fixed;
         top: 0;
