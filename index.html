@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KicksCauã - Loja de Sneakers Premium</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- TELA DE LOGIN -->
+    <div id="auth-screen" class="auth-screen">
+        <div class="auth-box">
+            <div class="brand">
+                <i class="fas fa-shoe-prints"></i>
+                <h1>KicksCauã</h1>
+                <p>Os melhores sneakers do mundo</p>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('login')">Entrar</button>
+                <button class="tab-btn" onclick="showTab('register')">Criar Conta</button>
+            </div>
+
+            <div id="login-form" class="form-section active">
+                <input type="text" id="login-user" placeholder="Usuário" required>
+                <input type="password" id="login-pass" placeholder="Senha" required>
+                <button onclick="doLogin()" class="btn-main">Entrar na Loja</button>
+                <p id="login-err" class="error"></p>
+            </div>
+
+            <div id="register-form" class="form-section">
+                <input type="text" id="reg-user" placeholder="Nome completo" required>
+                <input type="email" id="reg-email" placeholder="E-mail" required>
+                <input type="password" id="reg-pass" placeholder="Senha" required>
+                <button onclick="doRegister()" class="btn-main">Criar Conta</button>
+                <p id="reg-err" class="error"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SITE PRINCIPAL -->
+    <div id="main-store" class="hidden">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="brand-small">
+                <i class="fas fa-shoe-prints"></i>
+                <span>KicksCauã</span>
+            </div>
+            
+            <nav class="main-nav">
+                <a href="#" onclick="filterCategory('all')">Todos</a>
+                <a href="#" onclick="filterCategory('nike')">Nike</a>
+                <a href="#" onclick="filterCategory('adidas')">Adidas</a>
+                <a href="#" onclick="filterCategory('jordan')">Jordan</a>
+                <a href="#" onclick="filterCategory('yeezy')">Yeezy</a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="demand-indicator" title="Demanda atual">
+                    <i class="fas fa-fire"></i>
+                    <span id="demand-counter">1.247</span> pedidos/h
+                </div>
+                <span id="welcome-user"></span>
+                <button onclick="openCart()" class="cart-btn">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span id="cart-badge">0</span>
+                </button>
+                <button onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </header>
+
+        <!-- Admin Bar (só aparece para ADM) -->
+        <div id="admin-bar" class="admin-bar hidden">
+            <div class="admin-wrapper">
+                <span class="admin-title"><i class="fas fa-crown"></i> PAINEL ADMINISTRATIVO</span>
+                <div class="admin-actions">
+                    <button onclick="openAdminPanel()">
+                        <i class="fas fa-chart-line"></i> Ver Estatísticas
+                    </button>
+                    <button onclick="openDeliveries()">
+                        <i class="fas fa-truck"></i> Entregas
+                    </button>
+                    <button onclick="openComments()">
+                        <i class="fas fa-comments"></i> Comentários
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero -->
+        <section class="hero-sneakers">
+            <div class="hero-content">
+                <h2>Drop Exclusivo</h2>
+                <h1>Air Jordan 1 Retro High</h1>
+                <p>Edição limitada disponível agora</p>
+                <button onclick="scrollToProducts()" class="btn-hero">Ver Coleção</button>
+            </div>
+            <div class="hero-shoe">
+                <img src="https://i.pinimg.com/1200x/46/e9/87/46e9878151f23c277515aa567058345c.jpg" alt="Jordan 1" style="padding: 90px;">
+            </div>
+        </section>
+
+        <!-- Produtos -->
+        <section id="products-area" class="products-container">
+            <div class="section-header">
+                <h2><i class="fas fa-fire-alt"></i> Mais Populares</h2>
+                <div class="search-box">
+                    <input type="text" id="search-sneakers" placeholder="Buscar modelo..." onkeyup="searchSneakers()">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            
+            <div id="sneakers-grid" class="sneakers-grid"></div>
+            
+            <div id="no-sneakers" class="no-results hidden">
+                <i class="fas fa-search"></i>
+                <p>Modelo não encontrado no estoque.</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="store-footer">
+            <div class="footer-grid">
+                <div>
+                    <h3>KicksCauã</h3>
+                    <p>Autenticidade garantida em todos os produtos.</p>
+                </div>
+                <div>
+                    <h3>Redes</h3>
+                    <div class="socials">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <p class="copyright">&copy; 2026 KicksCauã. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <!-- MODAL ADMIN PAINEL COMPLETO -->
+    <div id="admin-panel-modal" class="modal hidden">
+        <div class="modal-content admin-panel-content">
+            <button onclick="closeAdminPanel()" class="close-x"><i class="fas fa-times"></i></button>
+            
+            <h2><i class="fas fa-crown"></i> Dashboard Administrativo</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-box blue">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Total Vendas</h3>
+                    <p id="stat-sales">R$ 0,00</p>
+                </div>
+                <div class="stat-box green">
+                    <i class="fas fa-truck"></i>
+                    <h3>Entregas Hoje</h3>
+                    <p id="stat-deliveries">0</p>
+                </div>
+                <div class="stat-box orange">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Investimento</h3>
+                    <p id="stat-investment">R$ 0,00</p>
+                </div>
+                <div class="stat-box purple">
+                    <i class="fas fa-star"></i>
+                    <h3>Avaliação Média</h3>
+                    <p id="stat-rating">0.0</p>
+                </div>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="switchAdminTab('demand')">Demanda em Tempo Real</button>
+                <button class="admin-tab" onclick="switchAdminTab('deliveries')">Entregas</button>
+                <button class="admin-tab" onclick="switchAdminTab('comments')">Comentários</button>
+                <button class="admin-tab" onclick="switchAdminTab('investment')">Investimentos</button>
+            </div>
+
+            <div id="tab-demand" class="admin-tab-content active">
+                <h3>Demanda Automática</h3>
+                <div class="demand-display">
+                    <div class="demand-number" id="live-demand">1.247</div>
+                    <div class="demand-label">pedidos por hora</div>
+                </div>
+                <div class="demand-chart">
+                    <div class="chart-bar" style="height: 40%"></div>
+                    <div class="chart-bar" style="height: 55%"></div>
+                    <div class="chart-bar" style="height: 45%"></div>
+                    <div class="chart-bar" style="height: 70%"></div>
+                    <div class="chart-bar" style="height: 85%" id="current-bar"></div>
+                </div>
+                <p class="demand-info"><i class="fas fa-info-circle"></i> A demanda aumenta automaticamente simulando pedidos reais</p>
+            </div>
+
+            <div id="tab-deliveries" class="admin-tab-content">
+                <h3>Status das Entregas</h3>
+                <div id="deliveries-list" class="list-content"></div>
+            </div>
+
+            <div id="tab-comments" class="admin-tab-content">
+                <h3>Últimos Comentários</h3>
+                <div id="comments-list" class="list-content"></div>
+            </div>
+
+            <div id="tab-investment" class="admin-tab-content">
+                <h3>Análise de Investimentos</h3>
+                <div class="investment-cards">
+                    <div class="inv-card">
+                        <h4>Marketing</h4>
+                        <p>R$ 45.000,00</p>
+                        <span class="positive">+12%</span>
+                    </div>
+                    <div class="inv-card">
+                        <h4>Estoque</h4>
+                        <p>R$ 280.000,00</p>
+                        <span class="positive">+8%</span>
+                    </div>
+                    <div class="inv-card">
+                        <h4>Logística</h4>
+                        <p>R$ 35.000,00</p>
+                        <span class="negative">-3%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CARRINHO -->
+    <div id="cart-modal" class="modal hidden">
+        <div class="modal-content cart-box">
+            <button onclick="closeCart()" class="close-x"><i class="fas fa-times"></i></button>
+            <h2><i class="fas fa-shopping-bag"></i> Seu Carrinho</h2>
+            <div id="cart-items-list"></div>
+            <div class="cart-footer">
+                <h3>Total: <span id="cart-total-price">R$ 0,00</span></h3>
+                <button onclick="finishOrder()" class="btn-main">Finalizar Pedido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PRODUTO -->
+    <div id="product-modal" class="modal hidden">
+        <div class="modal-content product-box">
+            <button onclick="closeProductModal()" class="close-x"><i class="fas fa-times"></i></button>
+            <div id="product-detail-content"></div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html><div class="tabs">
+    <button class="tab-btn active" data-tab="login">Entrar</button>
+    <button class="tab-btn" data-tab="register">Criar Conta</button>
+</div><!-- TELA DE CARREGAMENTO -->
+<div id="loading-screen" class="loading-screen hidden">
+    <div class="loading-content">
+        <div class="loading-logo">
+            <i class="fas fa-shoe-prints"></i>
+            <h1>KicksCauã</h1>
+        </div>
+        
+        <div class="loading-spinner">
+            <div class="spinner-circle"></div>
+            <div class="spinner-circle"></div>
+            <div class="spinner-circle"></div>
+        </div>
+        
+        <div class="loading-text" id="loading-text">Inicializando...</div>
+        
+        <div class="loading-progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div class="loading-percentage" id="loading-percentage">0%</div>
+    </div>
+</div>
+
